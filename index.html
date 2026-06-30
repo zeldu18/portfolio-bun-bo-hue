@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zelda Truong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf6ef;
+    --cream-dark: #f0e9dc;
+    --brown: #1e0f0a;
+    --brown-mid: #5c3322;
+    --terra: #c4522a;
+    --gold: #e0a23a;
+    --steam: rgba(255,255,255,0.55);
+    --pot-dark: #1c1410;
+    --pot-mid: #2e1f17;
+    --pot-rim: #3d2b20;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--brown);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2.5rem;
+    mix-blend-mode: multiply;
+  }
+  .nav-name {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--brown);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brown-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--terra); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2.5rem 4rem;
+    position: relative;
+  }
+  .hero-inner {
+    max-width: 1100px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero-text h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--brown);
+  }
+  .hero-text h1 em {
+    font-style: italic;
+    color: var(--terra);
+  }
+  .hero-text p {
+    font-size: 1.05rem;
+    color: var(--brown-mid);
+    max-width: 420px;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brown-mid);
+    opacity: 0.6;
+  }
+  .scroll-hint svg { animation: bounce 2s ease-in-out infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+  }
+
+  /* ── HERO POT (decorative, not sticky) ── */
+  .hero-pot { display: flex; justify-content: center; align-items: center; }
+  .hero-pot svg { width: 100%; max-width: 380px; }
+
+  /* ── COOKING SECTION ── */
+  .cooking {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    position: relative;
+  }
+
+  /* left: steps */
+  .steps { padding-right: 4rem; }
+
+  .step {
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .step.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .step-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .step-num {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra);
+  }
+  .step-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: var(--brown-mid);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+  .step h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin-bottom: 0.3rem;
+    color: var(--brown);
+  }
+  .step .sub {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 1rem;
+    font-family: var(--sans);
+  }
+  .step p {
+    font-size: 1rem;
+    color: var(--brown-mid);
+    max-width: 460px;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+  .step-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brown);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--terra);
+    padding-bottom: 0.15rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .step-link:hover { color: var(--terra); }
+  .step-link svg { transition: transform 0.2s; }
+  .step-link:hover svg { transform: translate(2px, -2px); }
+
+  /* right: sticky pot */
+  .pot-sticky-wrap {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #pot-svg { width: 100%; max-width: 380px; }
+
+  /* ── STEAM ANIMATIONS ── */
+  .steam-line {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: steam-rise 3s ease-in-out infinite;
+    opacity: 0;
+  }
+  .steam-line:nth-child(2) { animation-delay: 1s; }
+  .steam-line:nth-child(3) { animation-delay: 2s; }
+  @keyframes steam-rise {
+    0% { stroke-dashoffset: 60; opacity: 0; transform: translateY(0); }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.3; }
+    100% { stroke-dashoffset: -60; opacity: 0; transform: translateY(-20px); }
+  }
+  #steam-group { opacity: 0; transition: opacity 1s; }
+  #steam-group.visible { opacity: 1; }
+
+  /* ingredient drop animation */
+  .ingredient-anim {
+    opacity: 0;
+    transform-origin: center;
+  }
+
+  /* ── FINAL SECTION ── */
+  .finale {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2.5rem;
+    background: var(--brown);
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .finale::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, #3d1810 0%, #0e0805 100%);
+    opacity: 0.6;
+  }
+  .finale-inner { position: relative; z-index: 1; max-width: 620px; }
+  .finale h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--cream);
+  }
+  .finale h2 em { color: var(--gold); font-style: italic; }
+  .finale p {
+    font-size: 1rem;
+    color: rgba(250,246,239,0.7);
+    margin-bottom: 2.5rem;
+    line-height: 1.75;
+  }
+  .finale-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-light {
+    background: var(--cream);
+    color: var(--brown);
+    border: none;
+  }
+  .btn-light:hover { background: var(--gold); }
+  .btn-outline {
+    background: transparent;
+    color: var(--cream);
+    border: 1.5px solid rgba(250,246,239,0.4);
+  }
+  .btn-outline:hover { border-color: var(--cream); background: rgba(250,246,239,0.08); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .hero { padding: 5rem 1.25rem 3rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-pot { order: -1; }
+    .hero-pot svg { max-width: 260px; }
+    .cooking { grid-template-columns: 1fr; padding: 0 1.25rem; }
+    .steps { padding-right: 0; }
+    .pot-sticky-wrap { display: none; }
+    .step { min-height: auto; padding: 3rem 0; }
+    .finale { padding: 4rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-name" href="index.html">Zelda Truong</a>
+  <div class="nav-links">
+    <a href="projects.html">Projects ↗</a>
+    <a href="mailto:phuong@uni.minerva.edu">Say hi</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Is this pot<br>half empty<br>or <em>half full?</em></h1>
+      <p>Neither. It's me. Scroll down and I'll fill it in.</p>
+      <div class="scroll-hint">
+        <span>Start cooking</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2v10M3 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="hero-pot">
+      <!-- Empty pot, decorative -->
+      <svg viewBox="0 0 360 420" xmlns="http://www.w3.org/2000/svg">
+        <!-- pot shadow -->
+        <ellipse cx="180" cy="400" rx="120" ry="12" fill="#1e0f0a" opacity="0.12"/>
+        <!-- pot body -->
+        <path d="M 60,110 C 55,110 38,280 42,340 C 46,370 180,385 318,340 C 322,280 305,110 300,110 Z" fill="#2e1f17"/>
+        <!-- pot body sheen -->
+        <path d="M 75,120 C 72,140 60,270 64,330 C 80,340 110,348 110,320 C 108,270 100,140 100,120 Z" fill="#3d2920" opacity="0.5"/>
+        <!-- pot exterior bottom curve -->
+        <ellipse cx="180" cy="345" rx="138" ry="22" fill="#261510"/>
+        <!-- pot rim outer -->
+        <ellipse cx="180" cy="108" rx="142" ry="26" fill="#3d2b20"/>
+        <!-- pot rim inner (top opening) -->
+        <ellipse cx="180" cy="104" rx="128" ry="22" fill="#1a0d08"/>
+        <!-- interior dark -->
+        <ellipse cx="180" cy="104" rx="120" ry="20" fill="#0f0805"/>
+        <!-- handle left -->
+        <path d="M 55,170 C 30,165 18,175 18,195 C 18,215 30,225 55,220" stroke="#3d2b20" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 55,170 C 30,165 18,175 18,195 C 18,215 30,225 55,220" stroke="#4d3828" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- handle right -->
+        <path d="M 305,170 C 330,165 342,175 342,195 C 342,215 330,225 305,220" stroke="#3d2b20" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M 305,170 C 330,165 342,175 342,195 C 342,215 330,225 305,220" stroke="#4d3828" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- empty label -->
+        <text x="180" y="240" text-anchor="middle" font-family="'DM Serif Display', serif" font-size="18" fill="#3d2b20" opacity="0.5" font-style="italic">empty for now</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- COOKING STEPS -->
+<div class="cooking">
+  <!-- LEFT: steps -->
+  <div class="steps">
+
+    <div class="step" data-step="1">
+      <div class="step-meta">
+        <span class="step-num">01</span>
+        <span class="step-tag">The base</span>
+      </div>
+      <h2>Water &amp; bone</h2>
+      <p class="sub">Bún Bò Huế starts here</p>
+      <p>Every good broth starts with water and something that's been through a lot. I'm from Hanoi, Vietnam. That's the base. Everything else built on top of it.</p>
+    </div>
+
+    <div class="step" data-step="2">
+      <div class="step-meta">
+        <span class="step-num">02</span>
+        <span class="step-tag">The aromatics</span>
+      </div>
+      <h2>Lemongrass &amp; shallots</h2>
+      <p class="sub">Minerva University · 7 countries</p>
+      <p>I moved across 7 countries for university because apparently that's what Minerva does to you. Seoul, Berlin, Buenos Aires, Hyderabad, Taipei, London, San Francisco. Each one is in here somewhere.</p>
+    </div>
+
+    <div class="step" data-step="3">
+      <div class="step-meta">
+        <span class="step-num">03</span>
+        <span class="step-tag">The heat</span>
+      </div>
+      <h2>Chili &amp; shrimp paste</h2>
+      <p class="sub">Feminist research · data advocacy</p>
+      <p>Here's where it gets spicy. Women pay more for the same shampoo. I made a whole project about it. I'm still not over it. Also: women wait longer in ER queues. Also made a project about that.</p>
+      <a class="step-link" href="projects.html#pink-tax">
+        See Pink Tax project
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+
+    <div class="step" data-step="4">
+      <div class="step-meta">
+        <span class="step-num">04</span>
+        <span class="step-tag">The substance</span>
+      </div>
+      <h2>Beef (bắp bò)</h2>
+      <p class="sub">Data science · Python · ML</p>
+      <p>The substance. I once predicted stock prices using my own menstrual cycle. It worked. I also do normal data science things — Olympic medal forecasting, breast cancer prediction, plagiarism detection. The cycle one is still my favorite.</p>
+      <a class="step-link" href="projects.html#stock-cycle">
+        See Stock Cycle project
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+
+    <div class="step" data-step="5">
+      <div class="step-meta">
+        <span class="step-num">05</span>
+        <span class="step-tag">The structure</span>
+      </div>
+      <h2>Rice vermicelli</h2>
+      <p class="sub">Data Science &amp; Statistics · Designing Societies</p>
+      <p>The structure that holds everything together. Double degree in Data Science &amp; Statistics and Designing Societies at Minerva. I solve problems by turning them into models first and asking questions later. Sometimes this is a feature.</p>
+    </div>
+
+    <div class="step" data-step="6">
+      <div class="step-meta">
+        <span class="step-num">06</span>
+        <span class="step-tag">The good parts</span>
+      </div>
+      <h2>Fresh herbs &amp; lime</h2>
+      <p class="sub">Piano · every sport · strong opinions</p>
+      <p>The parts that don't go on a CV. I play piano. I try every sport I come across — current count: embarrassingly high. I have very strong opinions about this dish specifically. These are the ingredients that make the rest of it worth eating.</p>
+    </div>
+
+    <div class="step" data-step="7">
+      <div class="step-meta">
+        <span class="step-num">07</span>
+        <span class="step-tag">Still cooking</span>
+      </div>
+      <h2>The garnish</h2>
+      <p class="sub">Next chapter · product · entrepreneurship</p>
+      <p>This part's not done yet. I want to build products, maybe a company, definitely more soup. Open to collaborating on things that actually matter. If you have an idea, I probably want to hear it.</p>
+      <a class="step-link" href="mailto:phuong@uni.minerva.edu">
+        Let's talk
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: sticky pot -->
+  <div class="pot-sticky-wrap">
+    <svg id="pot-svg" viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- clip to pot interior -->
+        <clipPath id="interior-clip">
+          <ellipse cx="180" cy="220" rx="116" ry="155"/>
+        </clipPath>
+        <!-- liquid gradient, updated via JS -->
+        <linearGradient id="liquid-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="liq-stop1" offset="0%" stop-color="#a8c8d8"/>
+          <stop id="liq-stop2" offset="100%" stop-color="#8aafc0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- pot shadow -->
+      <ellipse cx="180" cy="418" rx="130" ry="14" fill="#1e0f0a" opacity="0.15"/>
+
+      <!-- INTERIOR (behind liquid) -->
+      <ellipse cx="180" cy="220" rx="116" ry="155" fill="#0f0805"/>
+
+      <!-- LIQUID (animated via GSAP) -->
+      <g clip-path="url(#interior-clip)">
+        <rect id="liquid-rect" x="64" y="460" width="232" height="300" fill="url(#liquid-grad)" rx="0"/>
+        <!-- liquid surface shimmer -->
+        <ellipse id="liquid-surface" cx="180" cy="460" rx="112" ry="10" fill="url(#liquid-grad)" opacity="0.7"/>
+      </g>
+
+      <!-- INGREDIENT ANIMATIONS (appear above pot, fall in) -->
+      <g id="ingredient-layer">
+        <!-- step 1: water drops -->
+        <g id="ing-1" class="ingredient-anim">
+          <ellipse cx="155" cy="50" rx="8" ry="12" fill="#7dbdd4" opacity="0.85"/>
+          <ellipse cx="180" cy="35" rx="6" ry="9" fill="#9dcce0" opacity="0.85"/>
+          <ellipse cx="205" cy="55" rx="7" ry="11" fill="#7dbdd4" opacity="0.85"/>
+        </g>
+        <!-- step 2: lemongrass stalks -->
+        <g id="ing-2" class="ingredient-anim">
+          <rect x="150" y="20" width="6" height="55" rx="3" fill="#7aaa5c" transform="rotate(-10 153 47)"/>
+          <rect x="170" y="15" width="5" height="60" rx="2.5" fill="#8fc46a" transform="rotate(5 172 45)"/>
+          <rect x="188" y="22" width="6" height="50" rx="3" fill="#6d9e50" transform="rotate(-5 191 47)"/>
+          <ellipse cx="185" cy="72" rx="18" ry="7" fill="#c8a44a" opacity="0.6"/>
+        </g>
+        <!-- step 3: chili peppers -->
+        <g id="ing-3" class="ingredient-anim">
+          <path d="M148,60 C145,40 152,20 158,15 C158,15 162,18 160,25 C168,22 172,30 168,45 C166,55 155,65 148,60Z" fill="#d42a1a"/>
+          <path d="M178,55 C176,35 183,15 189,10 C189,10 193,13 191,20 C199,17 202,26 198,40 C196,50 185,60 178,55Z" fill="#e03020"/>
+          <path d="M208,62 C205,42 212,22 218,17 C218,17 222,20 220,27 C228,24 231,33 227,47 C225,57 215,67 208,62Z" fill="#c81e0e"/>
+          <line x1="158" y1="15" x2="160" y2="8" stroke="#5a7a30" stroke-width="2" stroke-linecap="round"/>
+          <line x1="189" y1="10" x2="191" y2="3" stroke="#5a7a30" stroke-width="2" stroke-linecap="round"/>
+          <line x1="218" y1="17" x2="220" y2="10" stroke="#5a7a30" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- step 4: beef slices -->
+        <g id="ing-4" class="ingredient-anim">
+          <path d="M140,30 C138,22 145,15 158,16 C170,17 176,25 172,33 C168,41 158,43 148,40 C143,38 141,34 140,30Z" fill="#8b3a1a" opacity="0.9"/>
+          <path d="M165,38 C163,30 170,22 183,23 C195,24 200,33 196,41 C192,49 182,51 172,48 C167,46 166,42 165,38Z" fill="#7a3015" opacity="0.9"/>
+          <path d="M185,25 C183,17 190,10 203,11 C215,12 220,21 216,29 C212,37 202,39 192,36 C187,34 186,30 185,25Z" fill="#9b4220" opacity="0.9"/>
+          <!-- marbling -->
+          <path d="M143,28 C147,24 155,25 156,30" stroke="#c8744a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <path d="M168,36 C172,32 179,33 180,38" stroke="#c8744a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+        </g>
+        <!-- step 5: noodle bundle -->
+        <g id="ing-5" class="ingredient-anim">
+          <path d="M140,50 C145,30 165,20 175,35 C185,50 165,65 175,80" stroke="#f0e8d8" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M155,48 C160,28 178,18 185,33 C192,48 175,63 183,78" stroke="#e8dcc8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M168,52 C172,32 190,22 196,37 C202,52 186,67 193,82" stroke="#f0e8d8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M180,50 C184,30 200,20 206,35 C212,50 198,65 204,80" stroke="#e8dcc8" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </g>
+        <!-- step 6: herbs -->
+        <g id="ing-6" class="ingredient-anim">
+          <!-- mint/herb sprigs -->
+          <path d="M165,70 C162,50 168,30 175,20" stroke="#4a8a40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M175,20 C170,10 160,8 158,15" fill="#5aaa4a" stroke="none"/>
+          <path d="M175,20 C178,10 188,8 190,15" fill="#5aaa4a" stroke="none"/>
+          <path d="M175,35 C170,25 160,24 159,30" fill="#4a9a3a" stroke="none"/>
+          <path d="M175,35 C178,25 188,25 189,31" fill="#4a9a3a" stroke="none"/>
+          <path d="M175,50 C171,40 162,40 161,46" fill="#5aaa4a" stroke="none"/>
+          <path d="M175,50 C178,40 186,41 186,47" fill="#5aaa4a" stroke="none"/>
+          <!-- lime slice -->
+          <circle cx="205" cy="45" r="22" fill="#c8e860"/>
+          <circle cx="205" cy="45" r="18" fill="#b0d448"/>
+          <line x1="205" y1="27" x2="205" y2="63" stroke="#88b028" stroke-width="1.5"/>
+          <line x1="187" y1="45" x2="223" y2="45" stroke="#88b028" stroke-width="1.5"/>
+          <line x1="193" y1="32" x2="217" y2="58" stroke="#88b028" stroke-width="1"/>
+          <line x1="217" y1="32" x2="193" y2="58" stroke="#88b028" stroke-width="1"/>
+          <circle cx="205" cy="45" r="6" fill="#d8f070" opacity="0.7"/>
+        </g>
+        <!-- step 7: garnish / green onion -->
+        <g id="ing-7" class="ingredient-anim">
+          <path d="M160,75 C157,55 162,30 168,15" stroke="#3a7a30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M170,70 C167,50 172,28 177,13" stroke="#4a8a40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M180,72 C178,52 182,32 186,18" stroke="#3a7a30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- tiny leaves -->
+          <path d="M168,15 C162,5 155,3 154,10 C160,12 165,13 168,15Z" fill="#5aaa4a"/>
+          <path d="M177,13 C173,3 165,1 164,8 C170,10 175,11 177,13Z" fill="#4a9a3a"/>
+          <path d="M186,18 C182,8 175,6 174,13 C180,15 184,16 186,18Z" fill="#5aaa4a"/>
+          <!-- sesame seeds scatter -->
+          <circle cx="150" cy="55" r="2.5" fill="#e8c878"/>
+          <circle cx="210" cy="48" r="2" fill="#e8c878"/>
+          <circle cx="195" cy="65" r="2.5" fill="#e8c878"/>
+          <circle cx="163" cy="62" r="2" fill="#e8c878"/>
+        </g>
+      </g>
+
+      <!-- STEAM (shows after first ingredient) -->
+      <g id="steam-group">
+        <path class="steam-line" d="M148,95 C140,75 155,58 148,40" stroke="rgba(255,255,255,0.4)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path class="steam-line" d="M180,90 C173,70 188,53 181,35" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path class="steam-line" d="M212,95 C205,75 218,58 211,40" stroke="rgba(255,255,255,0.4)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <!-- POT BODY (on top, so liquid stays inside) -->
+      <!-- pot back wall -->
+      <path d="M 60,110 C 55,110 38,290 42,355 C 46,385 180,400 318,355 C 322,290 305,110 300,110 Z" fill="#2e1f17"/>
+      <!-- pot sheen left -->
+      <path d="M 72,120 C 69,145 58,280 62,345 C 75,355 100,360 100,335 C 98,275 90,145 90,120 Z" fill="#3d2920" opacity="0.45"/>
+      <!-- pot exterior bottom -->
+      <ellipse cx="180" cy="360" rx="140" ry="24" fill="#261510"/>
+      <!-- pot rim outer -->
+      <ellipse cx="180" cy="108" rx="144" ry="27" fill="#3d2b20"/>
+      <!-- pot rim bevel -->
+      <ellipse cx="180" cy="105" rx="136" ry="22" fill="#4a3428"/>
+      <!-- pot rim inner -->
+      <ellipse cx="180" cy="102" rx="120" ry="18" fill="#1a0d08"/>
+      <!-- handle left -->
+      <path d="M 57,172 C 32,167 20,178 20,198 C 20,218 32,228 57,223" stroke="#3d2b20" stroke-width="15" fill="none" stroke-linecap="round"/>
+      <path d="M 57,172 C 32,167 20,178 20,198 C 20,218 32,228 57,223" stroke="#4d3828" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <!-- handle right -->
+      <path d="M 303,172 C 328,167 340,178 340,198 C 340,218 328,228 303,223" stroke="#3d2b20" stroke-width="15" fill="none" stroke-linecap="round"/>
+      <path d="M 303,172 C 328,167 340,178 340,198 C 340,218 328,228 303,223" stroke="#4d3828" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+</div>
+
+<!-- FINALE -->
+<section class="finale">
+  <div class="finale-inner">
+    <h2>The dish is done.<br><em>So am I — for now.</em></h2>
+    <p>That's me in a bowl of Bún Bò Huế. Here's where to find the rest of it.</p>
+    <div class="finale-links">
+      <a class="btn btn-light" href="projects.html">See my projects</a>
+      <a class="btn btn-outline" href="https://github.com/zeldu18" target="_blank">GitHub ↗</a>
+      <a class="btn btn-outline" href="https://www.linkedin.com/in/zelda-truong" target="_blank">LinkedIn ↗</a>
+      <a class="btn btn-outline" href="mailto:phuong@uni.minerva.edu">Say hi →</a>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// Liquid state per step
+const stepData = [
+  { liquidY: 340, color1: '#a8c8d8', color2: '#7aaac0', ingId: 'ing-1' }, // water
+  { liquidY: 265, color1: '#d4b87a', color2: '#b89a55', ingId: 'ing-2' }, // golden broth
+  { liquidY: 200, color1: '#c85830', color2: '#a04020', ingId: 'ing-3' }, // spicy orange-red
+  { liquidY: 155, color1: '#b84020', color2: '#8a2e10', ingId: 'ing-4' }, // deep red
+  { liquidY: 120, color1: '#aa3818', color2: '#7a2808', ingId: 'ing-5' }, // richer
+  { liquidY: 88,  color1: '#a03210', color2: '#721e06', ingId: 'ing-6' }, // darker, herbs added
+  { liquidY: 60,  color1: '#982e0e', color2: '#6a1c04', ingId: 'ing-7' }, // final, full
+];
+
+const liquidRect    = document.getElementById('liquid-rect');
+const liquidSurface = document.getElementById('liquid-surface');
+const stop1         = document.getElementById('liq-stop1');
+const stop2         = document.getElementById('liq-stop2');
+const steamGroup    = document.getElementById('steam-group');
+
+function setLiquid(stepIndex, progress) {
+  const curr = stepData[stepIndex];
+  const next = stepData[Math.min(stepIndex + 1, stepData.length - 1)];
+
+  const y    = gsap.utils.interpolate(curr.liquidY, next.liquidY, progress);
+  const surfY = y + 10;
+
+  gsap.set(liquidRect,    { attr: { y: y } });
+  gsap.set(liquidSurface, { attr: { cy: surfY } });
+}
+
+// Individual step triggers
+document.querySelectorAll('.step').forEach((step, i) => {
+  const data = stepData[i];
+  const ingEl = document.getElementById(data.ingId);
+
+  ScrollTrigger.create({
+    trigger: step,
+    start: 'top 60%',
+    onEnter: () => {
+      // Reveal step text
+      step.classList.add('visible');
+
+      // Animate liquid
+      gsap.to(liquidRect,    { attr: { y: data.liquidY }, duration: 1.2, ease: 'power2.out' });
+      gsap.to(liquidSurface, { attr: { cy: data.liquidY + 10 }, duration: 1.2, ease: 'power2.out' });
+      gsap.to(stop1, { stopColor: data.color1, duration: 1.2 });
+      gsap.to(stop2, { stopColor: data.color2, duration: 1.2 });
+
+      // Show steam after step 1
+      if (i >= 0) steamGroup.classList.add('visible');
+
+      // Ingredient drop animation
+      if (ingEl) {
+        gsap.fromTo(ingEl,
+          { opacity: 0, y: -80, scale: 0.85 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.4)',
+            onComplete: () => {
+              gsap.to(ingEl, { opacity: 0, y: 30, scale: 0.7, duration: 0.6, delay: 0.8, ease: 'power2.in' });
+            }
+          }
+        );
+      }
+    },
+    onLeaveBack: () => {
+      step.classList.remove('visible');
+      if (i > 0) {
+        const prev = stepData[i - 1];
+        gsap.to(liquidRect,    { attr: { y: prev.liquidY }, duration: 0.8, ease: 'power2.out' });
+        gsap.to(liquidSurface, { attr: { cy: prev.liquidY + 10 }, duration: 0.8, ease: 'power2.out' });
+        gsap.to(stop1, { stopColor: prev.color1, duration: 0.8 });
+        gsap.to(stop2, { stopColor: prev.color2, duration: 0.8 });
+      }
+    }
+  });
+});
+
+// Ensure first step visible on load (if already in view)
+document.querySelectorAll('.step')[0]?.classList.add('visible');
+</script>
+</body>
+</html>
